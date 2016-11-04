@@ -1,10 +1,259 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <meta charset="gb2312">
+       <meta charset="gb2312">
         <title>注册表单</title>
-        <link rel="stylesheet" type="text/css" href="style/reg.css">
-        <script type="text/javascript" src="js/reg.js"></script>
+        <style type="text/css">
+html,body,h1,h2,h3,h4,h5,h6,div,ul,ol,li,dl,dt,dd,iframe,textarea,input,button,p,strong,b,a,span,del,pre,table,tr,th,td{margin:0; padding:0; -webkit-text-size-adjust:none;}
+h1,h2,h3,h4,h5,h6,em,del{font-style:normal; font-weight:normal; font-size:100%; -webkit-text-size-adjust:none;}
+label,input,textarea{outline:none;}
+
+.cl{zoom:1;}
+.cl:after{display:block; height:0; clear:both; visibility:hidden; overflow:hidden; content:'.';}
+
+body{font-family:Microsoft YaHei, Arial, Helvetica, sans-serif; background:url(../images/bghead.jpg) no-repeat top center #dfebf5;}
+#inpList{margin:85px auto; padding:10px; width:750px; border-radius:5px; font-size:14px; background:#fff;}
+    #inpList dt{margin-bottom:25px; padding-bottom:10px; height:40px; line-height:40px; font-size:24px; border-bottom:1px #d1d1d1 dashed; text-align:center;}
+        #inpList dd label .names,#inpList dd label input{display:inline; height:30px; line-height:30px; float:left;}
+        #inpList dd .names{width:70px; font-size:14px; text-align:right;}
+        #inpList dt i{font-size:16px; font-weight:700; font-style:normal; color:#05a;}
+    #inpList dd{margin-bottom:10px;}
+        #inpList dd label,#inpList dd p{float:left;}
+        #inpList dd label{display:block; margin-bottom:5px; height:30px; line-height:30px;}
+        #inpList dd p{margin-left:5px; height:30px; line-height:34px; color:#808080; font-size:12px; position:relative;}
+        #inpList dd p i{display:none; top:8px; left:0; width:16px; height:16px; background:url(../images/prompt.png) no-repeat; overflow:hidden; position:absolute;}
+            #inpList dd label input{width:300px; border:1px #c7c7c7 solid;}
+            #inpList dd label input.checkcode{width:174px;}
+            #inpList dd input{display:block; padding-left:3px; width:260px; height:28px; line-height:28px; font-size:14px; color:#999;}
+            #inpList dd.def label{color:#333;}
+                #inpList dd.def input{border:1px #d1d1d1 solid; color:#333;}
+            inpList dd.def p i{display:none;}
+            #inpList dd.point label{color:#0051a1;}
+                #inpList dd.point input{border:1px #5ca0df solid; color:#333;}
+            #inpList dd.point p{padding-left:20px;}
+                #inpList dd.point p i{display:block;}
+            #inpList dd.error label{color:#c00;}
+                #inpList dd.error input{border:1px #f8b3d0 solid; color:#333;}
+            #inpList dd.error p{padding-left:20px;}
+                #inpList dd.error p i{display:block; background-position:0 -16px;}
+            #inpList dd.ok p i{display:block; background-position:0 -32px;}
+        #inpList #enter{display:block; margin-left:76px; padding:0 8px; width:114px; height:40px; line-height:40px; text-align:center; text-decoration:none; color:#eee; background:#05a;}
+        #inpList #enter:hover{color:#fff; background:#0051a1;}
+
+        </style>
+        <script type="text/javascript">
+(
+    function()
+    {
+        var $ = function(_id)
+        {
+            return document.getElementById(_id);
+        };
+        
+        var inpStyle = function()
+        {
+            var inps = $("inpList").getElementsByTagName("input");//获得id为inpList 中的所有的input
+            for(var i = 0; i < inps.length; i++)
+            {
+                inps[i].onfocus = function()
+                {
+                    var par = this.parentNode.parentNode;
+                    var msg = par.getElementsByTagName("p")[0];
+                    this.parentNode.parentNode.className = "point cl";//this 指向当前咱们所触发此事件的元素
+                    check.focus[this.id](par, this, msg);
+                }
+                
+                inps[i].onblur = function()
+                {
+                    var par = this.parentNode.parentNode;
+                    var msg = par.getElementsByTagName("p")[0];
+                    par.className = "def cl";//this 指向当前咱们所触发此事件的元素
+                    check.blurs[this.id](par, this, msg);
+                }
+            }
+            
+            $("enter").onclick = function()
+            {
+                subcheck(inps);
+            }
+        };
+                
+        var check =
+        {
+            focus:
+            {
+                uname:function(_dd, _this, _p)
+                {
+                    _dd.className = "point cl";
+                    _p.innerHTML = "<i></i>给自己起个名字吧";
+                },
+                email:function(_dd, _this, _p)
+                {
+                    _dd.className = "point cl";
+                    _p.innerHTML = "<i></i>请输入您的常用邮箱地址";
+                },
+                mobile:function(_dd, _this, _p)
+                {
+                    _dd.className = "point cl";
+                    _p.innerHTML = "<i></i>请输入您的手机号码";
+                },
+                pwd:function(_dd, _this, _p)
+                {
+                    _dd.className = "point cl";
+                    _p.innerHTML = "<i></i>请输入安全密码";
+                },
+                qrpwd:function(_dd, _this, _p)
+                {
+                    _dd.className = "point cl";
+                    _p.innerHTML = "<i></i>请将上面的密码再输入一次";
+                }
+            },
+            blurs:
+            {
+                uname:function(_dd, _this, _p)//dd标签 当前输入框 消息区域的标签p
+                {
+                    var flag = false;
+                    _dd.className = "error cl";
+                    if(_this.value == "")
+                    {
+                        _p.innerHTML = "<i></i>用户帐号不得为空！";
+                    }
+                    else if(_this.value.length < 3 || _this.value.length > 16)
+                    {
+                        _p.innerHTML = "<i></i>用户名长度应控制在3-16位字符之间！";
+                    }
+                    else if(!/^[\w_-\u4e00-\u9fa5]+$/.test(_this.value))
+                    {
+                        _p.innerHTML = "<i></i>用户名只能由大小写字母，数字，下划线，中横线和中文组成！";
+                    }
+                    else
+                    {
+                        _dd.className = "ok cl";
+                        _p.innerHTML = "<i></i>";
+                        flag = true;
+                    }
+                    return flag;
+                },
+                email:function(_dd, _this, _p)
+                {
+                    var flag = false;
+                    _dd.className = "error cl";
+                    if(_this.value == "")
+                    {
+                        _p.innerHTML = "<i></i>邮箱不能为空！";
+                    }
+                    else if(!/\w+((-w+)|(\.\w+))*\@[\w]+((\.|-)[\w]+)*\.[\w]+/.test(_this.value))
+                    {
+                        _p.innerHTML = "<i></i>请输入正确的邮箱地址！";
+                    }
+                    else
+                    {
+                        _dd.className = "ok cl";
+                        _p.innerHTML = "<i></i>";
+                        flag = true;
+                    }
+                    return flag;
+                },
+                mobile:function(_dd, _this, _p)
+                {
+                    var flag = false;
+                    _dd.className = "error cl";
+                    if(_this.value == "")
+                    {
+                        _p.innerHTML = "<i></i>手机号码不能为空！";
+                    }
+                    else if(!/0?(13|14|15|18)[0-9]{9}/.test(_this.value))
+                    {
+                        _p.innerHTML = "<i></i>请输入正确的手机号码！";
+                    }
+                    else
+                    {
+                        _dd.className = "ok cl";
+                        _p.innerHTML = "<i></i>";
+                        flag = true;
+                    }
+                    return flag;
+                },
+                pwd:function(_dd, _this, _p)
+                {
+                    var flag = false;
+                    _dd.className = "error cl";
+                    if(_this.value == "")
+                    {
+                        _p.innerHTML = "<i></i>密码不能为空！";
+                    }
+                    else if(_this.value.length < 6 || _this.value.length > 16)
+                    {
+                        _p.innerHTML = "<i></i>密码长度应控制在6-16位字符之间！";
+                    }
+                    else if(!/^[\w_-]+$/.test(_this.value))
+                    {
+                        _p.innerHTML = "<i></i>密码只能由大小写字母，数字，下划线和中横线组成！";
+                    }
+                    else
+                    {
+                        _dd.className = "ok cl";
+                        _p.innerHTML = "<i></i>";
+                        flag = true;
+                    }
+                    return flag;
+                },
+                qrpwd:function(_dd, _this, _p)
+                {
+                    var flag = false;
+                    var pwd = $("pwd");
+                    _dd.className = "error cl";
+                    if(_this.value == "")
+                    {
+                        _p.innerHTML = "<i></i>为了保证您输入的密码准确无误，请再次输入密码！";
+                    }
+                    else if(_this.value != pwd.value)
+                    {
+                        _p.innerHTML = "<i></i>密码两次输入不一致，请重新输入！";
+                    }
+                    else
+                    {
+                        _dd.className = "ok cl";
+                        _p.innerHTML = "<i></i>";
+                        flag = true;
+                    }
+                    return flag;
+                }
+            }
+        };
+        
+        var subcheck = function(inps)
+        {
+            var flag = true;
+            for(var i = 0; i < inps.length; i++)
+            {
+                var par = inps[i].parentNode.parentNode;
+                var msg = par.getElementsByTagName("p")[0];
+                if(!check.blurs[inps[i].id](par, inps[i], msg))
+                {
+                    flag = false;
+                    break;
+                }
+            }
+            
+            if(flag)
+            {
+                alert("可以提交");
+            }
+            else
+            {
+                alert("不可提交");
+            }
+        }
+        
+        window.onload = function()//相当于程序的入口 main方法
+        {
+            inpStyle();
+        }
+    }
+)();
+        </script>
+        
     </head>
 
     <body>
