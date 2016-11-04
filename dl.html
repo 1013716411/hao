@@ -1,283 +1,132 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-       <meta charset="gb2312">
-        <title>×¢²á±íµ¥</title>
-        <style type="text/css">
-.cl{zoom:1;}
-.cl:after{display:block; height:0; clear:both; visibility:hidden; overflow:hidden; content:'.';}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>JSåšçš„ç„¦ç‚¹è½®æ’­å›¾</title>
+<style type="text/css">
+*{ padding:0; margin:0; list-style:none; border:0;}
+body{ background-color: #262626; }
+.all{ width: 500px; height: 200px; padding: 7px; border: 1px solid #2D2D2D; margin: 100px auto; position: relative; }
+.screen{
+	width:500px;
+	height:200px;
+	 overflow:hidden; 
+	position:relative;
+}
+.screen li{ width:500px; height:200px; overflow:hidden; float:left;}
+.screen ul{ position:absolute; left:0; top:0px; width:3000px;}
+.all ol{ position:absolute; right:10px; bottom:10px; line-height:20px; text-align:center;}
+.all ol li{ float: left; width: 15px; height: 15px; background: #fff;  margin-left: 5px; cursor: pointer; font-size: 10px; font-family: Verdana; line-height: 15px; border-radius: 15px; }
+.all ol li.current{ background:yellow;}
+</style>
+<script type="text/javascript">
+    window.onload= function() {
+        var box  = document.getElementById("all");  //   è·å¾—å¤§ç›’å­
+        var ul = box.children[0].children[0];  // è·å–ul
+        var ulLis = ul.children;  //  ul é‡Œé¢çš„æ‰€æœ‰  li
+        // å¤ä¹ ï¼š  cloneNode()     å…‹éš†èŠ‚ç‚¹       è¿½åŠ a.appendChild(b)  æŠŠb æ”¾åˆ°a çš„æœ€åé¢
+        //1.  ulLis[0].cloneNode(true)  å…‹éš†  èŠ‚ç‚¹
+        ul.appendChild(ulLis[0].cloneNode(true));   // ul æ˜¯ a   ulLis[0].cloneNode(true) æ˜¯b
 
-body{font-family:Microsoft YaHei, Arial, Helvetica, sans-serif; background:url(../images/bghead.jpg) no-repeat top center #dfebf5;}
-#inpList{margin:85px auto; padding:10px; width:750px; border-radius:5px; font-size:14px; background:#fff;}
-    #inpList dt{margin-bottom:25px; padding-bottom:10px; height:40px; line-height:40px; font-size:24px; border-bottom:1px #d1d1d1 dashed; text-align:center;}
-        #inpList dd label .names,#inpList dd label input{display:inline; height:30px; line-height:30px; float:left;}
-        #inpList dd .names{width:70px; font-size:14px; text-align:right;}
-        #inpList dt i{font-size:16px; font-weight:700; font-style:normal; color:#05a;}
-    #inpList dd{margin-bottom:10px;}
-        #inpList dd label,#inpList dd p{float:left;}
-        #inpList dd label{display:block; margin-bottom:5px; height:30px; line-height:30px;}
-        #inpList dd p{margin-left:5px; height:30px; line-height:34px; color:#808080; font-size:12px; position:relative;}
-        #inpList dd p i{display:none; top:8px; left:0; width:16px; height:16px; background:url(../images/prompt.png) no-repeat; overflow:hidden; position:absolute;}
-            #inpList dd label input{width:300px; border:1px #c7c7c7 solid;}
-            #inpList dd label input.checkcode{width:174px;}
-            #inpList dd input{display:block; padding-left:3px; width:260px; height:28px; line-height:28px; font-size:14px; color:#999;}
-            #inpList dd.def label{color:#333;}
-                #inpList dd.def input{border:1px #d1d1d1 solid; color:#333;}
-            inpList dd.def p i{display:none;}
-            #inpList dd.point label{color:#0051a1;}
-                #inpList dd.point input{border:1px #5ca0df solid; color:#333;}
-            #inpList dd.point p{padding-left:20px;}
-                #inpList dd.point p i{display:block;}
-            #inpList dd.error label{color:#c00;}
-                #inpList dd.error input{border:1px #f8b3d0 solid; color:#333;}
-            #inpList dd.error p{padding-left:20px;}
-                #inpList dd.error p i{display:block; background-position:0 -16px;}
-            #inpList dd.ok p i{display:block; background-position:0 -32px;}
-        #inpList #enter{display:block; margin-left:76px; padding:0 8px; width:114px; height:40px; line-height:40px; text-align:center; text-decoration:none; color:#eee; background:#05a;}
-        #inpList #enter:hover{color:#fff; background:#0051a1;}
-
-        </style>
-        <script type="text/javascript">
-(
-    function()
-    {
-        var $ = function(_id)
-        {
-            return document.getElementById(_id);
-        };
-        
-        var inpStyle = function()
-        {
-            var inps = $("inpList").getElementsByTagName("input");//»ñµÃidÎªinpList ÖĞµÄËùÓĞµÄinput
-            for(var i = 0; i < inps.length; i++)
-            {
-                inps[i].onfocus = function()
-                {
-                    var par = this.parentNode.parentNode;
-                    var msg = par.getElementsByTagName("p")[0];
-                    this.parentNode.parentNode.className = "point cl";//this Ö¸Ïòµ±Ç°ÔÛÃÇËù´¥·¢´ËÊÂ¼şµÄÔªËØ
-                    check.focus[this.id](par, this, msg);
+        //2. æ’å…¥ ol é‡Œé¢çš„li
+        var ol = box.children[1];  // è·å¾—ol
+        // å› ä¸º æˆ‘ä»¬è¦åˆ›å»ºå¾ˆå¤šä¸ª ol é‡Œé¢çš„li æ‰€ä»¥éœ€è¦ç”¨åˆ°for å¾ªç¯å“¦
+        for(var i=0;i<ulLis.length-1;i++) {   // ul é‡Œé¢çš„li  é•¿åº¦ è¦å‡å» 1  å› ä¸ºæˆ‘ä»¬å…‹éš†ä¸€ä¸ª
+            // åˆ›å»ºèŠ‚ç‚¹ li
+            var li = document.createElement("li");
+            li.innerHTML = i + 1;   //  å­˜åœ¨åŠ 1 çš„å…³ç³»
+            // a.appendChild(b);
+            ol.appendChild(li);
+        }
+        var olLis = ol.children;  // æ‰¾åˆ° ol é‡Œé¢çš„li
+        olLis[0].className = 'current';
+        // 3. åŠ¨ç”»éƒ¨åˆ†  éå†å°li ol
+        for(var i=0;i<olLis.length;i++) {
+            olLis[i].index = i;  // èµ‹äºˆç´¢å¼•å·
+            olLis[i].onmouseover = function() {
+                // æ¸…é™¤æ‰€æœ‰äºº
+                for(var j=0;j<olLis.length;j++) {
+                    olLis[j].className = "";
                 }
-                
-                inps[i].onblur = function()
-                {
-                    var par = this.parentNode.parentNode;
-                    var msg = par.getElementsByTagName("p")[0];
-                    par.className = "def cl";//this Ö¸Ïòµ±Ç°ÔÛÃÇËù´¥·¢´ËÊÂ¼şµÄÔªËØ
-                    check.blurs[this.id](par, this, msg);
-                }
-            }
-            
-            $("enter").onclick = function()
-            {
-                subcheck(inps);
-            }
-        };
-                
-        var check =
-        {
-            focus:
-            {
-                uname:function(_dd, _this, _p)
-                {
-                    _dd.className = "point cl";
-                    _p.innerHTML = "<i></i>¸ø×Ô¼ºÆğ¸öÃû×Ö°É";
-                },
-                email:function(_dd, _this, _p)
-                {
-                    _dd.className = "point cl";
-                    _p.innerHTML = "<i></i>ÇëÊäÈëÄúµÄ³£ÓÃÓÊÏäµØÖ·";
-                },
-                mobile:function(_dd, _this, _p)
-                {
-                    _dd.className = "point cl";
-                    _p.innerHTML = "<i></i>ÇëÊäÈëÄúµÄÊÖ»úºÅÂë";
-                },
-                pwd:function(_dd, _this, _p)
-                {
-                    _dd.className = "point cl";
-                    _p.innerHTML = "<i></i>ÇëÊäÈë°²È«ÃÜÂë";
-                },
-                qrpwd:function(_dd, _this, _p)
-                {
-                    _dd.className = "point cl";
-                    _p.innerHTML = "<i></i>Çë½«ÉÏÃæµÄÃÜÂëÔÙÊäÈëÒ»´Î";
-                }
-            },
-            blurs:
-            {
-                uname:function(_dd, _this, _p)//dd±êÇ© µ±Ç°ÊäÈë¿ò ÏûÏ¢ÇøÓòµÄ±êÇ©p
-                {
-                    var flag = false;
-                    _dd.className = "error cl";
-                    if(_this.value == "")
-                    {
-                        _p.innerHTML = "<i></i>ÓÃ»§ÕÊºÅ²»µÃÎª¿Õ£¡";
-                    }
-                    else if(_this.value.length < 3 || _this.value.length > 16)
-                    {
-                        _p.innerHTML = "<i></i>ÓÃ»§Ãû³¤¶ÈÓ¦¿ØÖÆÔÚ3-16Î»×Ö·ûÖ®¼ä£¡";
-                    }
-                    else if(!/^[\w_-\u4e00-\u9fa5]+$/.test(_this.value))
-                    {
-                        _p.innerHTML = "<i></i>ÓÃ»§ÃûÖ»ÄÜÓÉ´óĞ¡Ğ´×ÖÄ¸£¬Êı×Ö£¬ÏÂ»®Ïß£¬ÖĞºáÏßºÍÖĞÎÄ×é³É£¡";
-                    }
-                    else
-                    {
-                        _dd.className = "ok cl";
-                        _p.innerHTML = "<i></i>";
-                        flag = true;
-                    }
-                    return flag;
-                },
-                email:function(_dd, _this, _p)
-                {
-                    var flag = false;
-                    _dd.className = "error cl";
-                    if(_this.value == "")
-                    {
-                        _p.innerHTML = "<i></i>ÓÊÏä²»ÄÜÎª¿Õ£¡";
-                    }
-                    else if(!/\w+((-w+)|(\.\w+))*\@[\w]+((\.|-)[\w]+)*\.[\w]+/.test(_this.value))
-                    {
-                        _p.innerHTML = "<i></i>ÇëÊäÈëÕıÈ·µÄÓÊÏäµØÖ·£¡";
-                    }
-                    else
-                    {
-                        _dd.className = "ok cl";
-                        _p.innerHTML = "<i></i>";
-                        flag = true;
-                    }
-                    return flag;
-                },
-                mobile:function(_dd, _this, _p)
-                {
-                    var flag = false;
-                    _dd.className = "error cl";
-                    if(_this.value == "")
-                    {
-                        _p.innerHTML = "<i></i>ÊÖ»úºÅÂë²»ÄÜÎª¿Õ£¡";
-                    }
-                    else if(!/0?(13|14|15|18)[0-9]{9}/.test(_this.value))
-                    {
-                        _p.innerHTML = "<i></i>ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅÂë£¡";
-                    }
-                    else
-                    {
-                        _dd.className = "ok cl";
-                        _p.innerHTML = "<i></i>";
-                        flag = true;
-                    }
-                    return flag;
-                },
-                pwd:function(_dd, _this, _p)
-                {
-                    var flag = false;
-                    _dd.className = "error cl";
-                    if(_this.value == "")
-                    {
-                        _p.innerHTML = "<i></i>ÃÜÂë²»ÄÜÎª¿Õ£¡";
-                    }
-                    else if(_this.value.length < 6 || _this.value.length > 16)
-                    {
-                        _p.innerHTML = "<i></i>ÃÜÂë³¤¶ÈÓ¦¿ØÖÆÔÚ6-16Î»×Ö·ûÖ®¼ä£¡";
-                    }
-                    else if(!/^[\w_-]+$/.test(_this.value))
-                    {
-                        _p.innerHTML = "<i></i>ÃÜÂëÖ»ÄÜÓÉ´óĞ¡Ğ´×ÖÄ¸£¬Êı×Ö£¬ÏÂ»®ÏßºÍÖĞºáÏß×é³É£¡";
-                    }
-                    else
-                    {
-                        _dd.className = "ok cl";
-                        _p.innerHTML = "<i></i>";
-                        flag = true;
-                    }
-                    return flag;
-                },
-                qrpwd:function(_dd, _this, _p)
-                {
-                    var flag = false;
-                    var pwd = $("pwd");
-                    _dd.className = "error cl";
-                    if(_this.value == "")
-                    {
-                        _p.innerHTML = "<i></i>ÎªÁË±£Ö¤ÄúÊäÈëµÄÃÜÂë×¼È·ÎŞÎó£¬ÇëÔÙ´ÎÊäÈëÃÜÂë£¡";
-                    }
-                    else if(_this.value != pwd.value)
-                    {
-                        _p.innerHTML = "<i></i>ÃÜÂëÁ½´ÎÊäÈë²»Ò»ÖÂ£¬ÇëÖØĞÂÊäÈë£¡";
-                    }
-                    else
-                    {
-                        _dd.className = "ok cl";
-                        _p.innerHTML = "<i></i>";
-                        flag = true;
-                    }
-                    return flag;
-                }
-            }
-        };
-        
-        var subcheck = function(inps)
-        {
-            var flag = true;
-            for(var i = 0; i < inps.length; i++)
-            {
-                var par = inps[i].parentNode.parentNode;
-                var msg = par.getElementsByTagName("p")[0];
-                if(!check.blurs[inps[i].id](par, inps[i], msg))
-                {
-                    flag = false;
-                    break;
-                }
-            }
-            
-            if(flag)
-            {
-                alert("¿ÉÒÔÌá½»");
-            }
-            else
-            {
-                alert("²»¿ÉÌá½»");
+                this.className = 'current';
+                animate(ul,-this.index*ulLis[0].offsetWidth);
+                key = square = this.index; // é¼ æ ‡ç»è¿‡ key square è¦ç­‰äº å½“å‰çš„ç´¢å¼•å·
             }
         }
-        
-        window.onload = function()//Ïàµ±ÓÚ³ÌĞòµÄÈë¿Ú main·½·¨
-        {
-            inpStyle();
+       // 4. å®šæ—¶å™¨éƒ¨åˆ†  éš¾ç‚¹
+        var timer = null;  // å®šæ—¶å™¨
+        var key = 0; // ç”¨æ¥æ§åˆ¶å›¾ç‰‡çš„æ’­æ”¾çš„
+        var square = 0;  // ç”¨æ¥æ§åˆ¶å°æ–¹å—çš„
+        timer = setInterval(autoplay,3000);   // æ¯éš”3s è°ƒç”¨ä¸€æ¬¡ autoplay
+        function autoplay() {
+            key++;   // key == 1  å…ˆ ++
+            console.log(key); //  ä¸èƒ½è¶…è¿‡5
+            if(key > ulLis.length - 1)
+            {
+               // alert('åœä¸‹');
+                ul.style.left = 0;
+                key = 1;  // å› ä¸ºç¬¬6å¼ å°±æ˜¯ç¬¬ä¸€å¼ ï¼Œæˆ‘ä»¬å·²ç»æ’­æ”¾å®Œæ¯•äº†ï¼Œ ä¸‹ä¸€æ¬¡æ’­æ”¾ç¬¬2å¼ 
+                // ç¬¬2å¼ çš„ç´¢å¼•å·æ˜¯1
+            }
+            animate(ul,-key*ulLis[0].offsetWidth);
+            // å°æ–¹å—çš„åšæ³•
+            square++;  // å°æ–¹å—è‡ªåŠ 1
+            square = square>olLis.length-1 ? 0 : square;
+            /// æ¸…é™¤æ‰€æœ‰äºº
+            for(var i=0;i<olLis.length;i++) {
+                olLis[i].className = "";
+            }
+            olLis[square].className = "current";   // ç•™ä¸‹å½“å‰è‡ªå·±çš„
+
         }
+
+
+        // é¼ æ ‡ç»è¿‡å’Œåœæ­¢å®šæ—¶å™¨
+        box.onmouseover = function() {
+            clearInterval(timer);
+        }
+
+        box.onmouseout = function() {
+            timer = setInterval(autoplay,3000);  // ä¸€å®šè¿™ä¹ˆå¼€
+        }
+
+
+
+        //  åŸºæœ¬å°è£…
+        function animate(obj,target) {
+            clearInterval(obj.timer);  // è¦å¼€å¯å®šæ—¶å™¨ï¼Œå…ˆæ¸…é™¤ä»¥å‰å®šæ—¶å™¨
+            // æœ‰2ä¸ªå‚æ•° ç¬¬ä¸€ä¸ª å¯¹è±¡è°åšåŠ¨ç”»  ç¬¬äºŒ è·ç¦» åˆ°å“ªé‡Œ
+            // å¦‚æœ offsetLeft å¤§äºäº†  target ç›®æ ‡ä½ç½®å°±åº”è¯¥åæ–¹å‘
+            var speed = obj.offsetLeft < target ? 15 : -15;
+            obj.timer = setInterval(function() {
+                var result = target - obj.offsetLeft;  //  ä»–ä»¬çš„å€¼ ç­‰äº 0 è¯´æ˜å®Œå…¨ç›¸ç­‰
+                // åŠ¨ç”»çš„åŸç†
+                obj.style.left = obj.offsetLeft + speed  + "px";
+                if(Math.abs(result) <= 15) {
+                    obj.style.left = target + "px";   //æŠ–åŠ¨é—®é¢˜
+                    clearInterval(obj.timer);
+                }
+            },10);
+        }
+
     }
-)();
-        </script>
-        
-    </head>
+</script>
 
-    <body>
-    	<dl id="inpList">
-        	<dt>ÓÃ»§×¢²á</dt>
-        	<dd class="def cl">
-            	<label><span class="names">ÓÃ»§ÕÊºÅ£º</span><input id="uname" type="text"/></label>
-                <p><i></i>¸ø×Ô¼ºÆğ¸öÃû×Ö°É£¬Ëü½«³ÉÎªÄúµÇÂ¼±¾Õ¾µÄÓÃ»§Ãû</p>
-            </dd>
-            <dd class="def cl">
-            	<label><span class="names">µç×ÓÓÊÏä£º</span><input id="email" type="text"/></label>
-                <p><i></i>ÇëÊäÈëÄúµÄ³£ÓÃÓÊÏäµØÖ·£¬´ËÓÊÏäµØÖ·½«×÷ÎªĞŞ¸ÄÃÜÂë</p>
-            </dd>
-            <dd class="def cl">
-            	<label><span class="names">ÊÖ»úºÅÂë£º</span><input id="mobile" type="text"/></label>
-                <p><i></i>ÇëÊäÈëÄúµÄÊÖ»úºÅÂë£¬·½±ãÎÒÃÇÖ®¼äµÄÁªÏµ</p>
-            </dd>
-            <dd class="def cl">
-            	<label><span class="names">°²È«ÃÜÂë£º</span><input id="pwd" type="password"/></label>
-                <p><i></i>ÇëÊäÈë°²È«ÃÜÂë£¬Ëü½«×÷ÎªÄúµÄµÇÂ¼ÃÜÂë</p>
-            </dd>
-            <dd class="def cl">
-            	<label><span class="names">È·ÈÏÃÜÂë£º</span><input id="qrpwd" type="password"/></label>
-                <p><i></i>Çë½«ÉÏÃæµÄÃÜÂëÔÙÊäÈëÒ»´Î</p>
-            </dd>
-            <dd class="def cl">
-            	<label><a id="enter" href="javascript:void(0);">Á¢¼´×¢²á</a></label>
-            </dd>
-        </dl>
-    </body>
+</head>
+
+<body>
+<div class="all" id='all'>
+	<div class="screen">
+        <ul>
+            <li><img src="images/1.jpg" width="500" height="200" /></li>
+            <li><img src="images/2.jpg" width="500" height="200" /></li>
+            <li><img src="images/3.jpg" width="500" height="200" /></li>
+            <li><img src="images/4.jpg" width="500" height="200" /></li>
+            <li><img src="images/5.jpg" width="500" height="200" /></li>
+        </ul>
+    </div>
+    <ol>
+    </ol>
+</div>
+</body>
 </html>
