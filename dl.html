@@ -1,134 +1,219 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>JS做的焦点轮播图</title>
-<style type="text/css">
-*{ padding:0; margin:0; list-style:none; border:0;}
-body{ background-color: #262626; }
-.all{ width: 500px; height: 200px; padding: 7px; border: 1px solid #2D2D2D; margin: 100px auto; position: relative; }
-.screen{
-	width:500px;
-	height:200px;
-	 overflow:hidden; 
-	position:relative;
-}
-.screen li{ width:500px; height:200px; overflow:hidden; float:left;}
-.screen ul{ position:absolute; left:0; top:0px; width:3000px;}
-.all ol{ position:absolute; right:10px; bottom:10px; line-height:20px; text-align:center;}
-.all ol li{ float: left; width: 15px; height: 15px; background: #fff;  margin-left: 5px; cursor: pointer; font-size: 10px; font-family: Verdana; line-height: 15px; border-radius: 15px; }
-.all ol li.current{ background:yellow;}
-h3{position:absolute;left: 900px;top: 50px;}
-</style>
-<script type="text/javascript">
-    window.onload= function() {
-        var box  = document.getElementById("all");  //   获得大盒子
-        var ul = box.children[0].children[0];  // 获取ul
-        var ulLis = ul.children;  //  ul 里面的所有  li
-        // 复习：  cloneNode()     克隆节点       追加a.appendChild(b)  把b 放到a 的最后面
-        //1.  ulLis[0].cloneNode(true)  克隆  节点
-        ul.appendChild(ulLis[0].cloneNode(true));   // ul 是 a   ulLis[0].cloneNode(true) 是b
+    <meta charset="UTF-8">
+    <title>焦点轮播图</title>
+    <style type="text/css">
+        *{ margin: 0; padding: 0; text-decoration: none;}
+        body { padding: 20px;}
+        h1{position: absolute;left: 800px;top: 250px;color: #FF5511 }
+        #container { width: 600px; height: 400px; border: 3px solid #333; overflow: hidden; position: absolute;left:650px;top:300px;}
+        #list { width: 4200px; height: 400px; position: absolute; z-index: 1;}
+        #list img { float: left;}
+        #buttons { position: absolute; height: 10px; width: 100px; z-index: 2; bottom: 20px; left: 250px;}
+        #buttons span { cursor: pointer; float: left; border: 1px solid #fff; width: 10px; height: 10px; border-radius: 50%; background: #333; margin-right: 5px;}
+        #buttons .on {  background: orangered;}
+        .arrow { cursor: pointer; display: none; line-height: 39px; text-align: center; font-size: 36px; font-weight: bold; width: 40px; height: 40px;  position: absolute; z-index: 2; top: 180px; background-color: RGBA(0,0,0,.3); color: #fff;}
+        .arrow:hover { background-color: RGBA(0,0,0,.7);}
+        #container:hover .arrow { display: block;}
+        #prev { left: 20px;}
+        #next { right: 20px;}
+    </style>
+    <script type="text/javascript">
 
-        //2. 插入 ol 里面的li
-        var ol = box.children[1];  // 获得ol
-        // 因为 我们要创建很多个 ol 里面的li 所以需要用到for 循环哦
-        for(var i=0;i<ulLis.length-1;i++) {   // ul 里面的li  长度 要减去 1  因为我们克隆一个
-            // 创建节点 li
-            var li = document.createElement("li");
-            li.innerHTML = i + 1;   //  存在加1 的关系
-            // a.appendChild(b);
-            ol.appendChild(li);
-        }
-        var olLis = ol.children;  // 找到 ol 里面的li
-        olLis[0].className = 'current';
-        // 3. 动画部分  遍历小li ol
-        for(var i=0;i<olLis.length;i++) {
-            olLis[i].index = i;  // 赋予索引号
-            olLis[i].onmouseover = function() {
-                // 清除所有人
-                for(var j=0;j<olLis.length;j++) {
-                    olLis[j].className = "";
+             //第一步定义全局函数，编写轮播代码和获取轮播图的元素和定义变量
+          window.onload = function () {     //onload网页加载完毕才能通过定义某些方式获取元素
+            //获取轮播容器
+            var container = document.getElementById('container');
+             //获取列表里的图片
+            var list = document.getElementById('list');
+            //获取5个小圆点按钮
+            var buttons = document.getElementById('buttons').getElementsByTagName('span');
+            //获取左边的大按钮
+            var prev = document.getElementById('prev');
+            //获取右边的大按钮
+            var next = document.getElementById('next');
+            //设置当前显示的小圆点，比如显示第一个小圆点，就转到第一张图片
+            var index =1;
+            //优化，切换图片太快的话图片会卡在中间,现在设置当按钮和圆点切换完了才生效
+            var animated = false;
+            //设置定时器，自动播放图片用
+            var timer;
+            //第三步设置小圆点
+            //定义函数，函数名字叫showButton
+            function showButton(){
+            //设置小圆点在已经转换不是对应的图片里头消失掉
+              for(var i = 0; i<buttons.length; i++) //查找buttons里面的元素
+             {  if (buttons[i].className == 'on'){   //找到里面className元素(名为)on 
+                    buttons[i].className = '' ;       //去掉on变成一个等号和空字符串
+                    break;                         //break就是中断的意思
+            //请到下面第四步那里继续设置index，因为不设置它会一直加个减知道溢出图片
+             }    //for是查找他里面的每个不中断就会一直查找下去
+
+             }
+
+                /*上面已经获取小圆点的变量了就是buttons，
+        用buttons来获取index,因为数组是从0开始的，所以index要-1才能真正的对正第一个小圆点 */
+            buttons[index -1].className = 'on'; //设置属性on 上面我设置了on为橘黄色   
+            }   //第四步在下面设置图片转动的时候能对应到小圆点，所以要+1和-1才能对应到
+
+
+                //为了能看懂我把未简化的第二步留下来了
+                //第二步设置左右按钮，为了简便后面封装函数，这里注释掉方便以后理解
+            //事件绑定：当右边被点击的时候要做什么
+           /* next.onclick =function()
+            {   list获取style的left里的值减去自身的值再减去600
+            parseInt是把字符串变成数字，相当于把下面定义的-600px去掉了px变成了数字-600 再加字符串px 
+               list.style.left =parseInt(list.style.left) - 600 + 'px';  
+            }  */
+
+            //左键按钮和右键按钮相反所以+600
+            /*prev.onclick =function()
+            {  
+               list.style.left =parseInt(list.style.left) + 600 + 'px';  
+            }       */
+
+
+           //这里是第二部不过变成封装函数了，效果和第二步一样。优点是更简便了
+           //定义一个函数名字叫animate 因为有正600和负600，所以我们可以传一个参数叫(offset)方便定义
+             function animate(offset)
+             {  animated = true; //执行
+              //这里把offset取代600
+                //这里为了简便下面的判断，我定义了新的值叫newLeft，因为下面判断语句经常要用到
+               //parseInt(list.style.left) + offset; 这条语句
+               var newLeft = parseInt(list.style.left) + offset; 
+               var time = 300;  //轮播图片位移的总时间
+               var interval = 10; //位移间隔时间10毫秒
+               var speed = offset/(time/interval);  //每次位移量 总量/以(时间/秒) /是除的意思
+               //判断什么时候才位移 go是一个方法
+               function go(){
+                    //判断位移
+                if ( (speed < 0 && parseInt(list.style.left) > newLeft) || (speed > 0 && parseInt(list.style.left) < newLeft) ) {
+                    list.style.left = parseInt(list.style.left) + speed + 'px';
+                    setTimeout(go,interval); //每10毫秒运行一次go函数，如果移动到辅助图就归位
                 }
-                this.className = 'current';
-                animate(ul,-this.index*ulLis[0].offsetWidth);
-                key = square = this.index; // 鼠标经过 key square 要等于 当前的索引号
-            }
-        }
-       // 4. 定时器部分  难点
-        var timer = null;  // 定时器
-        var key = 0; // 用来控制图片的播放的
-        var square = 0;  // 用来控制小方块的
-        timer = setInterval(autoplay,3000);   // 每隔3s 调用一次 autoplay
-        function autoplay() {
-            key++;   // key == 1  先 ++
-            console.log(key); //  不能超过5
-            if(key > ulLis.length - 1)
-            {
-               // alert('停下');
-                ul.style.left = 0;
-                key = 1;  // 因为第6张就是第一张，我们已经播放完毕了， 下一次播放第2张
-                // 第2张的索引号是1
-            }
-            animate(ul,-key*ulLis[0].offsetWidth);
-            // 小方块的做法
-            square++;  // 小方块自加1
-            square = square>olLis.length-1 ? 0 : square;
-            /// 清除所有人
-            for(var i=0;i<olLis.length;i++) {
-                olLis[i].className = "";
-            }
-            olLis[square].className = "current";   // 留下当前自己的
-
-        }
-
-
-        // 鼠标经过和停止定时器
-        box.onmouseover = function() {
-            clearInterval(timer);
-        }
-
-        box.onmouseout = function() {
-            timer = setInterval(autoplay,3000);  // 一定这么开
-        }
-
-
-
-        //  基本封装
-        function animate(obj,target) {
-            clearInterval(obj.timer);  // 要开启定时器，先清除以前定时器
-            // 有2个参数 第一个 对象谁做动画  第二 距离 到哪里
-            // 如果 offsetLeft 大于了  target 目标位置就应该反方向
-            var speed = obj.offsetLeft < target ? 15 : -15;
-            obj.timer = setInterval(function() {
-                var result = target - obj.offsetLeft;  //  他们的值 等于 0 说明完全相等
-                // 动画的原理
-                obj.style.left = obj.offsetLeft + speed  + "px";
-                if(Math.abs(result) <= 15) {
-                    obj.style.left = target + "px";   //抖动问题
-                    clearInterval(obj.timer);
+                else{ //如果都没移动到就判断有没有移动到假的辅助图
+                    animated = false; //不执行
+                    list.style.left = newLeft + 'px';    //设置移动到辅助图就归位条件
+                    if(newLeft >-600){              
+                        list.style.left = -3000 + 'px';
+                    }
+                    if (newLeft < -3000) {                 
+                        list.style.left = -600 + 'px';
+                    }
                 }
-            },10);
-        }
+               }
+               go();
+              }
 
-    }
-</script>
+              // list.style.left = newLeft + 'px'; 
+               //第三步判断，移到上面去了，为了方便理解就注释下来了
+               //当图片大于-600(第一张图)的时候就回到-3000(第5张图)不做判断一直点击按钮左右的时候会溢出图片位置，即是去到不是显示图片的位置了
+               
+               //if (newLeft > -600) {         //判断newLeft大于负600的时候
+                  // list.style.left = -3000  + 'px';  //判断list.style.left等于-3000 +字符串'px'
+              // }
+              // if (newLeft < -3000) {        //判断newLeft小于负3000的时候
+               // list.style.left = -600 +'px'; //判断list.style.left等于负600 + 字符串'px'的时候
+              // }
+              //  } 
+                
+              // 设置自动播放 
+              function play(){                    
+                timer = setInterval(function(){      //setInterval是会一直执行
+                    next.onclick();
+                },1500)                              //每隔1.5秒就切换图片一次
+              }
+              function stop(){
+                clearInterval(timer);
+              }
+               
+             //鼠标点击右边按钮的时候触发某件要设置的事件
+                next.onclick =function(){
+                   //第四步
+                   if (index == 5) {   //点击右键当它大于5的时候就返回1
+                       index = 1;      //返回1   否则会溢出
+                   }
+                   else{
+                         index += 1    //小于5的时候就加1
+                   }
+                 //index += 1;  点击右边按钮index加1  ps这里已经调用到if语句了为了方便记留下了
+                    showButton();  //调用小圆点
+                    if(!animated){
+                        animate(-600); //图片转完了才执行按钮，否则点击按钮太快图片会卡在中间
+                    }
+                  //都会触发animate(-600)事件，图片向右移动-600
+                    //animate(-600)
+                }
+                 //鼠标点击左边按钮的时候触发某件要设置的事件
+                prev.onclick =function(){
+                
+                 if (index == 1) {   //点击左键当它小于1的时候就返回5
+                       index = 5;      //返回5   否则会溢出
+                   }
+                   else{
+                         index -= 1    //小于5的时候就-1
+                   }
+                  //index -= 1;  点击左边按钮index减1  ps这里已经调用到if语句了为了方便记留下了
+                     showButton(); //调用小圆点
+                      if(!animated){
+                        animate(-600); ////图片转完了才执行按钮，否则点击按钮太快图片会卡在中间
+                    }
 
+                   //都会触发animate(600)事件，图片向左移动600
+                   // animate(600)
+                }
+                //第五步给小圆点增加点击事件，就是点那个圆点切那张图
+                for (var i = 0; i < buttons.length; i++) {  //查找buttons里的每个元素
+                    buttons[i].onclick = function(){    //定义函数设置给每个元素都增加点击事件
+                    //判断如果在当前图片了还继续点击小圆点还是会产生没必要的值，所以优化一下
+                    if (this.className == "on") {  
+                        return; //return返回的意思
+                    }
+                    //定义了myIndex取buttons里的index 不过要加上getAttribute()否则获取不了，因为index是自定义属性，自定义属性是不能用点.来获取的
+                    var myIndex = parseInt(this.getAttribute("index")); //转换为数字用来计算
+                    //计算当前图片的值减去要点击图片的值   ps当前显示图片为index，之前设置好了
+                    var offset = -600 * (myIndex - index);
+                    animate(offset);    //在图片函数里传进对象
+                    //表示点击换了图片就更新下index到了那张图片
+                    index = myIndex;   
+                    showButton(); //调用小圆点，不调用的话点击小圆点图片能变但是圆点会不变
+                     if(!animated){
+                        animate(offset); //图片转完了才执行小圆点，否则点击按钮太快图片会卡在中间
+                    }
+                    }
+                }
+                container.onmouseover = stop;  //鼠标移到图片框
+                container.onmouseout =play;   //鼠标移开图片框
+                play();
+           }  
+
+         
+    </script>
+    
 </head>
-
 <body>
-<h3 style="color:#ffffff;">原生JS轮播图</h3>
-<div class="all" id='all'>
-	<div class="screen">
-        <ul>
-            <li><img src="images/1.jpg" width="500" height="200" /></li>
-            <li><img src="images/2.jpg" width="500" height="200" /></li>
-            <li><img src="images/3.jpg" width="500" height="200" /></li>
-            <li><img src="images/4.jpg" width="500" height="200" /></li>
-            <li><img src="images/5.jpg" width="500" height="200" /></li>
-        </ul>
+<h1>原生js熬夜轮播图</h1>
+<div id="container">
+    <div id="list" style="left:-600px;">
+        <img src="img/5.jpg" alt="1"/>
+        <img src="img/1.jpg" alt="1"/>
+        <img src="img/2.jpg" alt="2"/>
+        <img src="img/3.jpg" alt="3"/>
+        <img src="img/4.jpg" alt="4"/>
+        <img src="img/5.jpg" alt="5"/>
+        <img src="img/1.jpg" alt="5"/>
     </div>
-    <ol>
-    </ol>
+    <div id="buttons">
+        <span index="1" class="on"></span>
+        <span index="2"></span>
+        <span index="3"></span>
+        <span index="4"></span>
+        <span index="5"></span>
+    </div>
+    <a href="javascript:;" id="prev" class="arrow">&lt;</a>
+    <a href="javascript:;" id="next" class="arrow">&gt;</a>
 </div>
+
 </body>
 </html>
