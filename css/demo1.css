@@ -684,7 +684,7 @@
       .footer-box h1,.footer-box h3{
       	   color: #ffffff;
       }
-        @media screen and (min-width:320px) and ( max-width:768px){
+        @media screen and (min-width:320px) and ( max-width:920px){
         	.nav{
         		display: none;
         	}     	
@@ -701,13 +701,7 @@
 
 
 
-        @media screen and (min-width:768px) and (max-width:1280px){
-        	.nav{
-        		display: none;
-        	}    	
-        	.nav-2{
-        		display: block;
-        	}
+        @media screen and (min-width:921px) and (max-width:1280px){
         	.home-box h1,.home-box h2,.home-2 h1{
         		font-size: 2rem;
         	}
