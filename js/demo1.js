@@ -56,14 +56,13 @@
                   })
 //相册模式 
 
-       $(document).ready(function(){           
+          
         $('.imgbox4 img').click(function(){      
             var Img=$(this).attr('src');                    
-            $('.black4').css('display','block');
-            $('.close').css('display','block');
+            $('.black4,.close').css('display','block');
             $('.imgbox4-black img').attr('src',Img);             
             $('.imgbox4-black').fadeIn();
-            $('.imgbox4-black img').attr('width','400','height','400');    
+            $('.imgbox4-black img').css('width','400','height','400');    
                 $('.imgbox4-black').css({
                     'marginTop':-$('.imgbox4-black').outerHeight()/2,
                     'marginLeft':-$('.imgbox4-black').outerWidth()/2,                   
@@ -74,7 +73,6 @@
              $('.imgbox4-black').css('display','none');
              $('.close').css('display','none');
         })             
-   })
 
 //轮播图    
             $(document).ready(function(){
