@@ -701,6 +701,12 @@
 
 
         @media screen and (min-width:737px) and (max-width:1024px){
+          .nav{
+            display: none;
+          }       
+          .nav-2{
+            display: block;
+          }
         	.home-box h1,.home-box h2,.home-2 h1{
         		font-size: 2rem;
         	}
