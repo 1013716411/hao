@@ -88,6 +88,7 @@
 	    	height:100vh;
 	    	background-image: url(../img/pic.jpg);
         background-repeat: no-repeat;
+        background-size:100% 100%;
       }
         .home-box{
         	position: absolute;
