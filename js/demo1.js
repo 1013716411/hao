@@ -39,7 +39,7 @@
                       $('.home-1 .home-box1').siblings().addClass('home-img2');
                     }
                     if (top_h >= home2_h1) {
-                      $('.home-2 h1').delay(1000).fadeIn(1000);
+                      $('.home-2 h1').fadeIn(1000);
                     }
                     if (top_h >= home4_left) {
                       $('.home-4 .imgbox-left4').addClass('img-left4');
@@ -51,7 +51,7 @@
                       $('.home-7 .home-p7').addClass('home-p7-7');
                     }
                      if (top_h >= home7_p) {
-                      $('.footer .footer-box').delay(1000).fadeIn(1000);
+                      $('.footer .footer-box').fadeIn(1000);
                     }
                   })
 //相册模式 
